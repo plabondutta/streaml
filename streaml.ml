@@ -246,13 +246,7 @@ let main () =
     for j = 0 to 3 do
       avgtime.(j) <- avgtime.(j) +. times.(j).(k);
       mintime.(j) <- min mintime.(j) times.(j).(k);
-      maxtime.(j) <- max maxtime.(j) times.(j).(k);
-      Printf.printf "CSV,%d,%d,%s,%.1f,%.6f,%.6f,%.6f,%.6f\n" far_mask
-        stream_array_size
-        [| "copy"; "scale"; "add"; "triad" |].(j)
-        (1.0e-06 *. bytes.(j) /. mintime.(j))
-        avgtime.(j) mintime.(j) maxtime.(j)
-        times.(j).(0)
+      maxtime.(j) <- max maxtime.(j) times.(j).(k)
     done
   done;
 
@@ -260,6 +254,13 @@ let main () =
     "Function    Best Rate MB/s  Avg time     Min time     Max time\n";
   for j = 0 to 3 do
     avgtime.(j) <- avgtime.(j) /. float_of_int (ntimes - 1);
+
+    Printf.printf "CSV,%d,%d,%s,%.1f,%.6f,%.6f,%.6f,%.6f\n" far_mask
+      stream_array_size
+      [| "copy"; "scale"; "add"; "triad" |].(j)
+      (1.0e-06 *. bytes.(j) /. mintime.(j))
+      avgtime.(j) mintime.(j) maxtime.(j)
+      times.(j).(0);
 
     Printf.printf "%s%12.1f  %11.6f  %11.6f  %11.6f\n" label.(j)
       (1.0e-06 *. bytes.(j) /. mintime.(j))
